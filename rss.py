@@ -7,7 +7,7 @@ import os
 import time
 from pathlib import Path
 
-RSS_URL = "https://www.osimhistoria.com/osim-psychology/feed/podcast"
+RSS_URL = "https://www.spreaker.com/show/4227531/episodes/feed"
 
 DOWNLOAD_LAST_N = 3   # 👈 שנה ל־1 / 5 / 10 לפי הצורך
 DOWNLOAD_DIR = Path("downloads")
