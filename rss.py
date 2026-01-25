@@ -79,9 +79,20 @@ def download_file(url, path, retries=3):
 
 
 def main():
-    feed = feedparser.parse(RSS_URL)
+    try:
+        headers = {"User-Agent": "rss-downloader/1.0 (+https://github.com/)"}
+        resp = requests.get(RSS_URL, timeout=30, headers=headers)
+        resp.raise_for_status()
+    except Exception as e:
+        logging.error("חיבור ל-RSS נכשל: %s", e)
+        return
+
+    feed = feedparser.parse(resp.content)
+    if getattr(feed, "bozo", False):
+        logging.warning("feedparser שגיאה בעת ניתוח ה-RSS: %s", getattr(feed, "bozo_exception", ""))
+
     if not feed.entries:
-        logging.error("אין פרקים ב-RSS")
+        logging.error("אין פרקים ב-RSS (HTTP %s, Content-Type: %s, length=%d)", resp.status_code, resp.headers.get("content-type"), len(resp.content))
         return
 
     state = load_state()
