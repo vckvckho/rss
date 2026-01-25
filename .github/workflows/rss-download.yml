@@ -25,7 +25,7 @@ jobs:
 
       - name: Run RSS downloader
         run: |
-          python rss.py --url "https://www.osimhistoria.com/feed/podcast/osim-psychology" --n 3 --dir downloads
+          python rss.py --url "https://www.osimhistoria.com/osim-psychology/feed/podcast" --n 3 --dir downloads
 
       - name: Upload downloads artifact
         uses: actions/upload-artifact@v4
