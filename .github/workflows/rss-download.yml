@@ -1,6 +1,7 @@
 name: Weekly RSS download
 
 on:
+  workflow_dispatch:
   schedule:
     # Every Monday at 06:00 UTC
     - cron: '0 6 * * 1'
