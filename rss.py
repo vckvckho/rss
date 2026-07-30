@@ -7,7 +7,14 @@ import os
 import time
 from pathlib import Path
 
-RSS_URL = "https://www.spreaker.com/show/5277195/episodes/feed"
+PODCAST_PRESETS = {
+    "עושים פסיכולוגיה": "https://www.spreaker.com/show/5277195/episodes/feed",
+    "התשובה": "https://www.spreaker.com/show/4228834/episodes/feed",
+    "osim": "https://www.spreaker.com/show/5277195/episodes/feed",
+    "hatshuva": "https://www.spreaker.com/show/4228834/episodes/feed",
+}
+
+RSS_URL = PODCAST_PRESETS["עושים פסיכולוגיה"]
 
 DOWNLOAD_LAST_N = 3   # 👈 שנה ל־1 / 5 / 10 לפי הצורך
 DOWNLOAD_DIR = Path("downloads")
@@ -150,7 +157,7 @@ if __name__ == "__main__":
     parser.add_argument("--quiet", action="store_true", help="Less verbose output")
     args = parser.parse_args()
 
-    RSS_URL = args.url
+    RSS_URL = PODCAST_PRESETS.get(args.url, args.url)
     DOWNLOAD_LAST_N = args.n
     DOWNLOAD_DIR = Path(args.dir)
     STATE_FILE = Path(args.state)

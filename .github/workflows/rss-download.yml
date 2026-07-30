@@ -3,6 +3,20 @@ name: Weekly RSS download
 on:
   workflow_dispatch:
     inputs:
+      podcast:
+        description: 'בחר פודקאסט / Select Podcast'
+        required: false
+        default: 'עושים פסיכולוגיה'
+        type: choice
+        options:
+          - 'עושים פסיכולוגיה'
+          - 'התשובה'
+          - 'קישור מותאם אישית (Custom RSS)'
+      custom_rss_url:
+        description: 'קישור RSS מותאם אישית (אם נבחר מותאם אישית)'
+        required: false
+        default: ''
+        type: string
       podcast_count:
         description: 'Number of podcasts/episodes to download'
         required: false
@@ -30,12 +44,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Determine RSS URL
+        id: get_url
+        run: |
+          CUSTOM_URL="${{ inputs.custom_rss_url }}"
+          PODCAST="${{ inputs.podcast }}"
+          
+          if [ -n "$CUSTOM_URL" ]; then
+            URL="$CUSTOM_URL"
+          elif [ "$PODCAST" = "התשובה" ]; then
+            URL="https://www.spreaker.com/show/4228834/episodes/feed"
+          else
+            URL="https://www.spreaker.com/show/5277195/episodes/feed"
+          fi
+          echo "rss_url=$URL" >> $GITHUB_OUTPUT
+
       - name: Run RSS downloader
         run: |
-          python rss.py --url "https://www.spreaker.com/show/5277195/episodes/feed" --n ${{ inputs.podcast_count || '3' }} --dir downloads
+          python rss.py --url "${{ steps.get_url.outputs.rss_url }}" --n ${{ inputs.podcast_count || '3' }} --dir downloads
 
       - name: Upload downloads artifact
         uses: actions/upload-artifact@v4
         with:
           name: downloads-${{ github.run_id }}
           path: downloads
+
