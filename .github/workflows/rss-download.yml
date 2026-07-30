@@ -2,6 +2,12 @@ name: Weekly RSS download
 
 on:
   workflow_dispatch:
+    inputs:
+      podcast_count:
+        description: 'Number of podcasts/episodes to download'
+        required: false
+        default: '3'
+        type: number
   schedule:
     # Every Monday at 06:00 UTC
     - cron: '0 6 * * 1'
@@ -26,7 +32,7 @@ jobs:
 
       - name: Run RSS downloader
         run: |
-          python rss.py --url "https://www.spreaker.com/show/5277195/episodes/feed" --n 3 --dir downloads
+          python rss.py --url "https://www.spreaker.com/show/5277195/episodes/feed" --n ${{ inputs.podcast_count || '3' }} --dir downloads
 
       - name: Upload downloads artifact
         uses: actions/upload-artifact@v4
